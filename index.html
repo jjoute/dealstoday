@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DealsToday | Kids Fashion & Flash Deals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#FFF1F2',
+              100: '#FFE4E6',
+              500: '#F43F5E',
+              600: '#E11D48',
+              700: '#BE123C',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #F8FAFC; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen pb-28 flex flex-col justify-between">
+
+  <!-- Top Promo Banner -->
+  <div class="bg-slate-900 text-white text-xs font-semibold py-2 px-4 text-center tracking-wide">
+    🔥 <span class="text-amber-400 font-bold">TODAY'S KIDS FASHION DEALS:</span> Up to 55% OFF! Free Store/Warehouse Pickup Available.
+  </div>
+
+  <main class="max-w-4xl mx-auto w-full px-4 sm:px-6 pt-6">
+    
+    <!-- Header -->
+    <header class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4 text-center sm:text-left flex-col sm:flex-row">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-500 to-amber-400 text-white flex items-center justify-center shadow-lg shadow-rose-500/20 font-black text-2xl tracking-tighter shrink-0">
+          DT
+        </div>
+        <div>
+          <div class="flex items-center justify-center sm:justify-start gap-2">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">DealsToday</h1>
+            <span class="bg-rose-100 text-rose-700 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">Kids Wear</span>
+          </div>
+          <p class="text-xs font-medium text-slate-500 mt-0.5">Trendy Kids Apparel & Daily Steal Deals • <a href="https://www.instagram.com/dealstoday_07/" target="_blank" class="text-rose-600 font-bold hover:underline">@dealstoday_07</a></p>
+          <div class="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-semibold text-emerald-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Store & Warehouse Dispatch Open: 9:00 AM – 8:00 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header Cart Summary Badge -->
+      <button onclick="scrollToCheckout()" class="flex items-center gap-3 bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 rounded-2xl transition shadow-md shrink-0">
+        <div class="relative">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span id="headerCartCount" class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </div>
+        <div class="text-left">
+          <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Your Bag</span>
+          <span id="headerCartTotal" class="text-sm font-extrabold text-white">₹0</span>
+        </div>
+      </button>
+    </header>
+
+    <!-- Main Ordering Flow Container -->
+    <div id="storefrontContainer" class="space-y-8">
+
+      <!-- STEP 1: Catalog & Category Filter -->
+      <section class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+              Pick Today's Deals
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Select age group/size and add multiple outfits to your shopping bag.</p>
+          </div>
+
+          <!-- Category Tabs -->
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <button type="button" onclick="filterCatalog('All')" class="cat-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white">All Deals</button>
+            <button type="button" onclick="filterCatalog('Boys')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">Boys</button>
+            <button type="button" onclick="filterCatalog('Girls')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">Girls</button>
+            <button type="button" onclick="filterCatalog('Combos')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">Value Combos</button>
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </section>
+
+      <!-- STEP 2: Mini Shopping Cart & Order Form -->
+      <div id="checkoutSection" class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 overflow-hidden">
+        
+        <div class="bg-slate-900 text-white p-5 sm:px-8 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-full bg-rose-500 text-white text-xs flex items-center justify-center font-bold">2</span>
+            <h2 class="text-lg font-extrabold">Your Shopping Bag & Checkout</h2>
+          </div>
+          <span id="savingsBadge" class="hidden bg-amber-400 text-slate-950 text-xs font-extrabold px-2.5 py-1 rounded-lg">
+            You Save ₹0!
+          </span>
+        </div>
+
+        <form id="dealOrderForm" class="p-5 sm:p-8 space-y-8" novalidate>
+
+          <!-- Cart Items List -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">Selected Items</label>
+              <button type="button" id="clearCartBtn" onclick="clearCart()" class="hidden text-xs font-bold text-rose-600 hover:underline">Clear Bag</button>
+            </div>
+
+            <div id="cartItemsContainer" class="space-y-2.5">
+              <!-- Empty State -->
+              <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center">
+                <p class="text-sm font-bold text-slate-500">Your shopping bag is empty</p>
+                <p class="text-xs text-slate-400 mt-1">Tap "+ Add to Bag" on any deal above to start your order.</p>
+              </div>
+            </div>
+            <p class="text-xs text-rose-600 font-semibold hidden" id="cartError">⚠️ Please add at least one item to your shopping bag before placing an order.</p>
+          </div>
+
+          <!-- Customer Details -->
+          <section class="space-y-4 pt-2 border-t border-slate-100">
+            <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Customer Details</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="customerName" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Parent / Customer Name <span class="text-rose-600">*</span>
+                </label>
+                <input type="text" id="customerName" required placeholder="e.g., Priya Sharma"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition text-sm bg-slate-50/50" />
+                <p class="text-xs text-rose-500 mt-1 hidden" id="nameError">Please enter your full name.</p>
+              </div>
+
+              <div>
+                <label for="phoneNumber" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  WhatsApp Number <span class="text-rose-600">*</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-bold text-slate-400">+91</span>
+                  <input type="tel" id="phoneNumber" required maxlength="10" placeholder="9876543210"
+                    class="w-full pl-11 pr-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition text-sm bg-slate-50/50" />
+                </div>
+                <p class="text-xs text-rose-500 mt-1 hidden" id="phoneError">Enter a valid 10-digit WhatsApp number.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Fulfillment Option: Store/Warehouse Pickup vs Home Delivery -->
+          <section class="space-y-4 pt-2 border-t border-slate-100">
+            <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Delivery or Pickup Preference</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="flex items-start gap-3 p-4 border-2 rounded-2xl cursor-pointer transition fulfillment-option border-rose-600 bg-rose-50/30">
+                <input type="radio" name="fulfillmentType" value="Store / Warehouse Pickup" data-fee="0" checked class="mt-1 text-rose-600 focus:ring-rose-500" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-extrabold text-sm text-slate-900">Store / Warehouse Pickup</span>
+                    <span class="text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">FREE</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Collect directly from our retail store or warehouse counter.</p>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-4 border-2 rounded-2xl cursor-pointer transition fulfillment-option border-slate-200 hover:border-rose-400">
+                <input type="radio" name="fulfillmentType" value="Home Delivery" data-fee="50" class="mt-1 text-rose-600 focus:ring-rose-500" />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-extrabold text-sm text-slate-900">Home Delivery</span>
+                    <span class="text-[11px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md">+ ₹50</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Doorstep delivery via local courier / dispatch rider.</p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Conditional Block A: Store / Warehouse Pickup Fields -->
+            <div id="pickupFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+              <div>
+                <label for="pickupLocation" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Select Pickup Point <span class="text-rose-600">*</span>
+                </label>
+                <select id="pickupLocation" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-white">
+                  <option value="Main Retail Store (Upper Bagdogra)">Main Retail Store (Upper Bagdogra)</option>
+                  <option value="Central Warehouse Dispatch Hub">Central Warehouse Dispatch Hub</option>
+                  <option value="City Center Pickup Counter">City Center Pickup Counter</option>
+                </select>
+              </div>
+              <div>
+                <label for="pickupDate" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Preferred Pickup Date <span class="text-rose-600">*</span>
+                </label>
+                <input type="date" id="pickupDate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-white" />
+              </div>
+            </div>
+
+            <!-- Conditional Block B: Home Delivery Fields -->
+            <div id="deliveryFields" class="hidden space-y-4 bg-amber-50/40 p-4 rounded-2xl border border-amber-200/80">
+              <div>
+                <label for="deliveryAddress" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Full Delivery Address <span class="text-rose-600">*</span>
+                </label>
+                <textarea id="deliveryAddress" rows="2" placeholder="House/Flat No., Street, Locality..."
+                  class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-white"></textarea>
+                <p class="text-xs text-rose-500 mt-1 hidden" id="addressError">Please enter your complete delivery address.</p>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="landmark" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nearby Landmark</label>
+                  <input type="text" id="landmark" placeholder="e.g., Near Main Market / School"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-white" />
+                </div>
+                <div>
+                  <label for="pincode" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    Pincode <span class="text-rose-600">*</span>
+                  </label>
+                  <input type="text" id="pincode" maxlength="6" placeholder="734014"
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-white" />
+                  <p class="text-xs text-rose-500 mt-1 hidden" id="pincodeError">Enter a valid 6-digit pincode.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Payment & Special Notes -->
+          <section class="space-y-4 pt-2 border-t border-slate-100">
+            <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Payment & Notes</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 p-3.5 border-2 rounded-2xl cursor-pointer transition payment-option border-rose-600 bg-rose-50/30">
+                <input type="radio" name="paymentMethod" value="UPI / QR Scan" checked class="text-rose-600 focus:ring-rose-500" />
+                <div>
+                  <span class="font-bold text-sm text-slate-900 block">Pay via UPI / QR Code</span>
+                  <span class="text-xs text-slate-500">Fast confirmation via GPay / PhonePe</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3.5 border-2 rounded-2xl cursor-pointer transition payment-option border-slate-200 hover:border-rose-400">
+                <input type="radio" name="paymentMethod" value="Cash on Pickup / Delivery (COD)" class="text-rose-600 focus:ring-rose-500" />
+                <div>
+                  <span class="font-bold text-sm text-slate-900 block">Pay on Pickup / Delivery</span>
+                  <span class="text-xs text-slate-500">Pay cash or scan when receiving items</span>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label for="orderNotes" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Special Note / Size Request (Optional)</label>
+              <input type="text" id="orderNotes" placeholder="e.g., Gift wrap needed, or call before delivery..."
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-600 text-sm bg-slate-50/50" />
+            </div>
+          </section>
+
+          <!-- Final Price Breakdown Box -->
+          <div class="bg-slate-900 text-white rounded-2xl p-5 space-y-2.5">
+            <div class="flex justify-between text-xs text-slate-300">
+              <span>Items Subtotal (Deal Price):</span>
+              <span id="summarySubtotal" class="font-bold text-white">₹0</span>
+            </div>
+            <div class="flex justify-between text-xs text-slate-300">
+              <span>Delivery / Pickup Charges:</span>
+              <span id="summaryDelivery" class="font-bold text-emerald-400">FREE</span>
+            </div>
+            <div class="flex justify-between text-xs text-amber-400 font-semibold">
+              <span>Total Deal Discount Saved:</span>
+              <span id="summarySavings">- ₹0</span>
+            </div>
+            <div class="border-t border-slate-700 pt-2.5 flex justify-between items-baseline">
+              <span class="text-sm font-bold uppercase tracking-wider">Total Payable</span>
+              <span id="summaryGrandTotal" class="text-2xl font-black text-amber-400">₹0</span>
+            </div>
+          </div>
+
+          <button type="submit" id="submitBtn"
+            class="w-full bg-rose-600 hover:bg-rose-700 active:scale-[0.99] text-white font-extrabold py-4 px-6 rounded-2xl shadow-lg shadow-rose-600/25 transition flex items-center justify-center gap-2 text-base">
+            <span id="btnText">Confirm & Place Deal Order</span>
+            <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation Screen (Hidden until order placed) -->
+    <div id="confirmationScreen" class="hidden bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 text-center max-w-xl mx-auto">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+
+      <span class="bg-emerald-50 text-emerald-700 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-200">ORDER CONFIRMED</span>
+      <h2 class="text-2xl font-black text-slate-900 mt-2">Thank You for Shopping!</h2>
+      <p class="text-xs text-slate-500 mt-1">Our team at <strong>DealsToday</strong> has received your order and will notify you on WhatsApp once it is packed.</p>
+      
+      <div class="my-5 inline-block bg-rose-50 border border-rose-200 rounded-2xl px-5 py-2.5">
+        <span class="text-[10px] uppercase tracking-wider text-rose-600 font-extrabold block">Your Order ID</span>
+        <span id="confirmedOrderId" class="text-xl font-mono font-black text-slate-900 tracking-wide">DT-00000</span>
+      </div>
+
+      <div class="bg-slate-50 rounded-2xl p-4 text-left space-y-2.5 text-xs text-slate-700 border border-slate-200/70">
+        <div class="flex justify-between border-b border-slate-200 pb-2">
+          <span class="text-slate-500">Customer:</span>
+          <span id="sumCustomer" class="font-bold text-slate-900"></span>
+        </div>
+        <div class="border-b border-slate-200 pb-2">
+          <span class="text-slate-500 block mb-1">Ordered Outfits:</span>
+          <div id="sumItems" class="font-bold text-slate-900 space-y-1"></div>
+        </div>
+        <div class="flex justify-between border-b border-slate-200 pb-2">
+          <span class="text-slate-500">Fulfillment:</span>
+          <span id="sumFulfillment" class="font-bold text-slate-900 text-right"></span>
+        </div>
+        <div class="flex justify-between border-b border-slate-200 pb-2">
+          <span class="text-slate-500">Payment Mode:</span>
+          <span id="sumPayment" class="font-bold text-slate-900"></span>
+        </div>
+        <div class="flex justify-between pt-1 text-sm font-black text-slate-900">
+          <span>Total Amount Payable:</span>
+          <span id="sumTotal" class="text-rose-600 text-base"></span>
+        </div>
+      </div>
+
+      <button id="resetFormBtn" class="mt-6 w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-extrabold uppercase tracking-wider hover:bg-slate-800 transition">
+        ← Continue Shopping Deals
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Sticky Mobile Bottom Cart Bar -->
+  <div id="stickyCartBar" class="hidden fixed bottom-0 inset-x-0 bg-slate-900/95 backdrop-blur-md text-white p-3.5 px-5 border-t border-slate-800 z-50">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div>
+        <span id="stickyCount" class="text-xs font-bold text-amber-400 block">0 Items in Bag</span>
+        <span id="stickyTotal" class="text-lg font-black">₹0</span>
+        <span id="stickySaved" class="text-[11px] text-emerald-400 font-semibold ml-1"></span>
+      </div>
+      <button onclick="scrollToCheckout()" class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-lg transition">
+        Proceed to Checkout →
+      </button>
+    </div>
+  </div>
+
+  <footer class="text-center text-xs text-slate-400 mt-12 mb-6">
+    © <span id="year"></span> DealsToday (@dealstoday_07) • Powered by JDZ Digital Solutions
+  </footer>
+
+  <script>
+    // =========================================================
+    // CONFIGURATION: Paste your Google Script Web App URL here
+    // =========================================================
+    const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzq0YZareWuGPgaATJZPHi3zcNcv8qw5D7-Tb4uo8nv2djxqeYBNzPUNpPFOQYPy2Ac/exec";
+
+    // Dummy Kids Fashion Product Catalog
+    const PRODUCTS = [
+      {
+        id: "DT-101",
+        name: "Boys Cotton Co-ord Summer Set",
+        category: "Boys",
+        mrp: 899,
+        price: 449,
+        badge: "50% OFF • Best Seller",
+        stockTag: "Only 4 left!",
+        sizes: ["1-2Y", "3-4Y", "5-6Y", "7-8Y"],
+        image: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "DT-102",
+        name: "Girls Floral Party Frock with Bow",
+        category: "Girls",
+        mrp: 1299,
+        price: 599,
+        badge: "54% OFF • Flash Deal",
+        stockTag: "Selling Fast",
+        sizes: ["1-2Y", "3-4Y", "5-6Y", "7-8Y"],
+        image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "DT-103",
+        name: "Kids Graphic Tees (Pack of 3)",
+        category: "Combos",
+        mrp: 999,
+        price: 499,
+        badge: "50% OFF • Value Pack",
+        stockTag: "In Stock",
+        sizes: ["1-2Y", "3-4Y", "5-6Y", "7-8Y"],
+        image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "DT-104",
+        name: "Boys Denim Dungaree & Tee Set",
+        category: "Boys",
+        mrp: 1199,
+        price: 549,
+        badge: "54% OFF • Steal Deal",
+        stockTag: "Only 3 left!",
+        sizes: ["1-2Y", "3-4Y", "5-6Y"],
+        image: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "DT-105",
+        name: "Girls Festive Ethnic Lehenga Choli",
+        category: "Girls",
+        mrp: 1499,
+        price: 699,
+        badge: "53% OFF • Festive Pick",
+        stockTag: "Limited Stock",
+        sizes: ["3-4Y", "5-6Y", "7-8Y"],
+        image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?auto=format&fit=crop&w=600&q=80"
+      },
+      {
+        id: "DT-106",
+        name: "Unisex Cotton Nightsuit Joggers Set",
+        category: "Combos",
+        mrp: 799,
+        price: 399,
+        badge: "50% OFF • Daily Comfort",
+        stockTag: "In Stock",
+        sizes: ["1-2Y", "3-4Y", "5-6Y", "7-8Y"],
+        image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=600&q=80"
+      }
+    ];
+
+    let cart = []; // { cartKey, id, name, size, price, mrp, qty }
+    let activeCategory = 'All';
+
+    // Initialize Date & Footer Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const pickupDateInput = document.getElementById('pickupDate');
+    pickupDateInput.min = todayStr;
+    pickupDateInput.value = todayStr;
+
+    // Render Product Catalog
+    function renderCatalog() {
+      const grid = document.getElementById('productGrid');
+      const filtered = activeCategory === 'All'
+        ? PRODUCTS
+        : PRODUCTS.filter(p => p.category === activeCategory);
+
+      grid.innerHTML = filtered.map(prod => `
+        <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+          <div>
+            <div class="relative h-44 bg-slate-100 overflow-hidden">
+              <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover" />
+              <span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow">
+                ${prod.badge}
+              </span>
+              <span class="absolute bottom-2 right-2 bg-slate-900/80 backdrop-blur-sm text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                ⚡ ${prod.stockTag}
+              </span>
+            </div>
+
+            <div class="p-4">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">${prod.category}</span>
+              <h3 class="font-extrabold text-sm text-slate-900 mt-0.5 line-clamp-1">${prod.name}</h3>
+              
+              <div class="flex items-baseline gap-2 mt-2">
+                <span class="text-lg font-black text-rose-600">₹${prod.price}</span>
+                <span class="text-xs text-slate-400 line-through font-semibold">MRP ₹${prod.mrp}</span>
+                <span class="text-[11px] font-bold text-emerald-600">Save ₹${prod.mrp - prod.price}</span>
+              </div>
+
+              <!-- Size Selector -->
+              <div class="mt-3">
+                <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Select Age / Size:</label>
+                <select id="size-${prod.id}" class="w-full text-xs font-bold border border-slate-200 rounded-xl px-2.5 py-2 bg-slate-50 focus:outline-none focus:border-rose-500">
+                  ${prod.sizes.map(s => `<option value="${s}">Age ${s}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 pt-0">
+            <button type="button" onclick="addToCart('${prod.id}')"
+              class="w-full bg-slate-900 hover:bg-rose-600 active:scale-95 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm">
+              <span>+ Add to Bag</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterCatalog(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.textContent.includes(cat) || (cat === 'All' && btn.textContent === 'All Deals')) {
+          btn.className = 'cat-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white';
+        } else {
+          btn.className = 'cat-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50';
+        }
+      });
+      renderCatalog();
+    }
+
+    // Add item to Cart
+    function addToCart(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      const sizeSelect = document.getElementById(`size-${productId}`);
+      const selectedSize = sizeSelect ? sizeSelect.value : product.sizes[0];
+      const cartKey = `${product.id}_${selectedSize}`;
+
+      const existing = cart.find(item => item.cartKey === cartKey);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          cartKey,
+          id: product.id,
+          name: product.name,
+          size: selectedSize,
+          price: product.price,
+          mrp: product.mrp,
+          qty: 1
+        });
+      }
+
+      document.getElementById('cartError').classList.add('hidden');
+      renderCart();
+    }
+
+    function updateQty(cartKey, delta) {
+      const idx = cart.findIndex(i => i.cartKey === cartKey);
+      if (idx === -1) return;
+
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      }
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      renderCart();
+    }
+
+    function getDeliveryFee() {
+      const selected = document.querySelector('input[name="fulfillmentType"]:checked');
+      return selected ? parseInt(selected.dataset.fee, 10) : 0;
+    }
+
+    // Render Cart & Totals
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const clearBtn = document.getElementById('clearCartBtn');
+      const stickyBar = document.getElementById('stickyCartBar');
+      const savingsBadge = document.getElementById('savingsBadge');
+
+      const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+      const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const totalMrp = cart.reduce((sum, i) => sum + (i.mrp * i.qty), 0);
+      const totalSavings = totalMrp - subtotal;
+      const deliveryFee = totalItems > 0 ? getDeliveryFee() : 0;
+      const grandTotal = subtotal + deliveryFee;
+
+      // Update Header & Sticky Bar
+      document.getElementById('headerCartCount').textContent = totalItems;
+      document.getElementById('headerCartTotal').textContent = `₹${grandTotal}`;
+
+      if (totalItems === 0) {
+        clearBtn.classList.add('hidden');
+        stickyBar.classList.add('hidden');
+        savingsBadge.classList.add('hidden');
+        container.innerHTML = `
+          <div class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center">
+            <p class="text-sm font-bold text-slate-500">Your shopping bag is empty</p>
+            <p class="text-xs text-slate-400 mt-1">Tap "+ Add to Bag" on any deal above to start your order.</p>
+          </div>
+        `;
+      } else {
+        clearBtn.classList.remove('hidden');
+        stickyBar.classList.remove('hidden');
+        savingsBadge.classList.remove('hidden');
+        savingsBadge.textContent = `You Save ₹${totalSavings}!`;
+
+        document.getElementById('stickyCount').textContent = `${totalItems} ${totalItems === 1 ? 'Item' : 'Items'} in Bag`;
+        document.getElementById('stickyTotal').textContent = `₹${grandTotal}`;
+        document.getElementById('stickySaved').textContent = `(Saved ₹${totalSavings})`;
+
+        container.innerHTML = cart.map(item => `
+          <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 gap-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-sm text-slate-900">${item.name}</span>
+                <span class="bg-slate-200 text-slate-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md">Size: ${item.size}</span>
+              </div>
+              <div class="text-xs text-slate-500 mt-0.5">
+                <span class="font-bold text-rose-600">₹${item.price}</span>
+                <span class="line-through text-slate-400 ml-1">₹${item.mrp}</span>
+                <span class="text-slate-400 ml-1">× ${item.qty} = </span>
+                <strong class="text-slate-900">₹${item.price * item.qty}</strong>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1">
+              <button type="button" onclick="updateQty('${item.cartKey}', -1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 font-extrabold text-xs flex items-center justify-center">-</button>
+              <span class="text-xs font-extrabold w-5 text-center">${item.qty}</span>
+              <button type="button" onclick="updateQty('${item.cartKey}', 1)" class="w-6 h-6 rounded-lg bg-slate-900 text-white hover:bg-rose-600 font-extrabold text-xs flex items-center justify-center">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Update Summary Box
+      document.getElementById('summarySubtotal').textContent = `₹${subtotal}`;
+      document.getElementById('summaryDelivery').textContent = deliveryFee === 0 ? 'FREE' : `+ ₹${deliveryFee}`;
+      document.getElementById('summarySavings').textContent = `- ₹${totalSavings}`;
+      document.getElementById('summaryGrandTotal').textContent = `₹${grandTotal}`;
+    }
+
+    function scrollToCheckout() {
+      document.getElementById('checkoutSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Fulfillment Toggle (Store/Warehouse vs Home Delivery)
+    const fulfillmentRadios = document.querySelectorAll('input[name="fulfillmentType"]');
+    fulfillmentRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        fulfillmentRadios.forEach(r => {
+          r.closest('label').classList.remove('border-rose-600', 'bg-rose-50/30');
+          r.closest('label').classList.add('border-slate-200');
+        });
+        radio.closest('label').classList.remove('border-slate-200');
+        radio.closest('label').classList.add('border-rose-600', 'bg-rose-50/30');
+
+        const isDelivery = radio.value === 'Home Delivery';
+        document.getElementById('pickupFields').classList.toggle('hidden', isDelivery);
+        document.getElementById('deliveryFields').classList.toggle('hidden', !isDelivery);
+        renderCart();
+      });
+    });
+
+    // Payment Radio Highlight
+    const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    paymentRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        paymentRadios.forEach(r => {
+          r.closest('label').classList.remove('border-rose-600', 'bg-rose-50/30');
+          r.closest('label').classList.add('border-slate-200');
+        });
+        radio.closest('label').classList.remove('border-slate-200');
+        radio.closest('label').classList.add('border-rose-600', 'bg-rose-50/30');
+      });
+    });
+
+    // Generate Unique Order ID
+    function generateOrderId() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let result = 'DT-';
+      for (let i = 0; i < 5; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    // Form Submission
+    const form = document.getElementById('dealOrderForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      // 1. Validate Cart
+      if (cart.length === 0) {
+        document.getElementById('cartError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        document.getElementById('cartError').classList.add('hidden');
+      }
+
+      // 2. Validate Customer Name
+      const name = document.getElementById('customerName').value.trim();
+      if (!name) {
+        document.getElementById('nameError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        document.getElementById('nameError').classList.add('hidden');
+      }
+
+      // 3. Validate 10-digit WhatsApp Number
+      const phone = document.getElementById('phoneNumber').value.trim();
+      if (!/^[0-9]{10}$/.test(phone)) {
+        document.getElementById('phoneError').classList.remove('hidden');
+        isValid = false;
+      } else {
+        document.getElementById('phoneError').classList.add('hidden');
+      }
+
+      // 4. Validate Fulfillment Details
+      const fulfillmentType = document.querySelector('input[name="fulfillmentType"]:checked').value;
+      let locationDetails = '';
+
+      if (fulfillmentType === 'Home Delivery') {
+        const addr = document.getElementById('deliveryAddress').value.trim();
+        const landmark = document.getElementById('landmark').value.trim();
+        const pincode = document.getElementById('pincode').value.trim();
+
+        if (!addr) {
+          document.getElementById('addressError').classList.remove('hidden');
+          isValid = false;
+        } else {
+          document.getElementById('addressError').classList.add('hidden');
+        }
+
+        if (!/^[0-9]{6}$/.test(pincode)) {
+          document.getElementById('pincodeError').classList.remove('hidden');
+          isValid = false;
+        } else {
+          document.getElementById('pincodeError').classList.add('hidden');
+        }
+
+        locationDetails = `${addr}${landmark ? ', Landmark: ' + landmark : ''} - Pin: ${pincode}`;
+      } else {
+        const pickupPoint = document.getElementById('pickupLocation').value;
+        const pickupDate = document.getElementById('pickupDate').value;
+        locationDetails = `${pickupPoint} (Pickup Date: ${pickupDate})`;
+      }
+
+      if (!isValid) return;
+
+      // Compute Financials
+      const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const totalMrp = cart.reduce((sum, i) => sum + (i.mrp * i.qty), 0);
+      const totalSavings = totalMrp - subtotal;
+      const deliveryFee = getDeliveryFee();
+      const grandTotal = subtotal + deliveryFee;
+
+      const itemsSummary = cart.map(i => `${i.name} [Size: ${i.size}] x${i.qty} (₹${i.price * i.qty})`).join(' | ');
+
+      const payload = {
+        orderId: generateOrderId(),
+        customerName: name,
+        phoneNumber: phone,
+        itemsSummary: itemsSummary,
+        itemCount: cart.reduce((sum, i) => sum + i.qty, 0),
+        fulfillmentType: fulfillmentType,
+        locationDetails: locationDetails,
+        paymentMethod: document.querySelector('input[name="paymentMethod"]:checked').value,
+        subtotal: subtotal,
+        deliveryFee: deliveryFee,
+        totalSavings: totalSavings,
+        totalAmount: `₹${grandTotal}`,
+        numericTotal: grandTotal,
+        notes: document.getElementById('orderNotes').value.trim() || 'None'
+      };
+
+      // Loading State
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      submitBtn.disabled = true;
+      btnText.textContent = "Placing your order...";
+      btnSpinner.classList.remove('hidden');
+
+      try {
+        if (GOOGLE_SCRIPT_WEB_APP_URL.startsWith("http")) {
+          await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        // Populate Receipt
+        document.getElementById('confirmedOrderId').textContent = payload.orderId;
+        document.getElementById('sumCustomer').textContent = `${payload.customerName} (+91 ${payload.phoneNumber})`;
+        document.getElementById('sumItems').innerHTML = cart.map(i => `<div>• ${i.name} (${i.size}) × ${i.qty} — ₹${i.price * i.qty}</div>`).join('');
+        document.getElementById('sumFulfillment').textContent = `${payload.fulfillmentType} — ${payload.locationDetails}`;
+        document.getElementById('sumPayment').textContent = payload.paymentMethod;
+        document.getElementById('sumTotal').textContent = `${payload.totalAmount} (Saved ₹${payload.totalSavings})`;
+
+        // Show Confirmation
+        document.getElementById('storefrontContainer').classList.add('hidden');
+        document.getElementById('stickyCartBar').classList.add('hidden');
+        document.getElementById('confirmationScreen').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (err) {
+        alert("Unable to submit order. Please check your connection and try again.");
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = "Confirm & Place Deal Order";
+        btnSpinner.classList.add('hidden');
+      }
+    });
+
+    // Reset Storefront
+    document.getElementById('resetFormBtn').addEventListener('click', () => {
+      form.reset();
+      cart = [];
+      pickupDateInput.value = todayStr;
+      document.getElementById('pickupFields').classList.remove('hidden');
+      document.getElementById('deliveryFields').classList.add('hidden');
+      renderCart();
+      document.getElementById('confirmationScreen').classList.add('hidden');
+      document.getElementById('storefrontContainer').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initial Render
+    renderCatalog();
+    renderCart();
+  </script>
+</body>
+</html>

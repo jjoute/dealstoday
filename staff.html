@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dispatch & Owner Dashboard | DealsToday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen p-4 sm:p-6">
+
+  <div class="max-w-5xl mx-auto space-y-6">
+    
+    <!-- Top Header -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-400 text-white font-black text-lg flex items-center justify-center shadow">
+          DT
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900">DealsToday — Staff & Owner Portal</h1>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Kids Fashion Store • Warehouse Dispatch, Pickup & WhatsApp Alerts</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <button onclick="loadDemoOrders()" class="flex-1 sm:flex-none text-xs font-bold px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition">
+          Load Demo Orders
+        </button>
+        <button id="refreshBtn" onclick="loadOrders()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition active:scale-95 shadow">
+          <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Sync Live Orders</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Owner Analytics / Quick Stats Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Orders</span>
+        <p id="statTotalOrders" class="text-2xl font-black text-slate-900 mt-1">0</p>
+        <span id="statPickupSplit" class="text-[11px] text-slate-500 font-medium">0 Pickup • 0 Delivery</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-600">Pending Action</span>
+        <p id="statPendingOrders" class="text-2xl font-black text-amber-600 mt-1">0</p>
+        <span class="text-[11px] text-slate-500 font-medium">Needs packing / confirmation</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-blue-200 shadow-sm">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-blue-600">Packed / Out</span>
+        <p id="statReadyOrders" class="text-2xl font-black text-blue-600 mt-1">0</p>
+        <span class="text-[11px] text-slate-500 font-medium">In transit or awaiting pickup</span>
+      </div>
+
+      <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-sm">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400">Total Revenue</span>
+        <p id="statTotalRevenue" class="text-2xl font-black text-white mt-1">₹0</p>
+        <span id="statDeliveredCount" class="text-[11px] text-emerald-400 font-medium">0 Delivered orders</span>
+      </div>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+        <button onclick="filterOrders('All')" class="filter-btn active px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-sm">All</button>
+        <button onclick="filterOrders('Pending')" class="filter-btn px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-rose-50">Pending</button>
+        <button onclick="filterOrders('Confirmed / Packed')" class="filter-btn px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-rose-50">Confirmed / Packed</button>
+        <button onclick="filterOrders('Out for Delivery')" class="filter-btn px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-rose-50">Ready / Out for Delivery</button>
+        <button onclick="filterOrders('Delivered')" class="filter-btn px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-rose-50">Delivered</button>
+      </div>
+
+      <input type="text" id="searchInput" oninput="renderOrders()" placeholder="Search Order ID, Name, or Phone..."
+        class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-medium focus:outline-none focus:border-rose-500 sm:w-64" />
+    </div>
+
+    <!-- Orders Feed -->
+    <div id="ordersContainer" class="space-y-4">
+      <div class="text-center py-12 text-slate-400 font-medium text-sm">Loading DealsToday orders...</div>
+    </div>
+
+  </div>
+
+  <script>
+    // =========================================================
+    // CONFIGURATION: Paste your Google Script Web App URL here
+    // =========================================================
+    const GOOGLE_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzq0YZareWuGPgaATJZPHi3zcNcv8qw5D7-Tb4uo8nv2djxqeYBNzPUNpPFOQYPy2Ac/exec";
+
+    let allOrders = [];
+    let currentFilter = 'All';
+
+    const statusBadges = {
+      'Pending': 'bg-amber-100 text-amber-900 border-amber-300',
+      'Confirmed / Packed': 'bg-purple-100 text-purple-900 border-purple-300',
+      'Out for Delivery': 'bg-blue-100 text-blue-900 border-blue-300',
+      'Ready for Pickup': 'bg-blue-100 text-blue-900 border-blue-300',
+      'Delivered': 'bg-emerald-100 text-emerald-900 border-emerald-300'
+    };
+
+    // Parse ₹ amount safely
+    function parseRupees(val) {
+      if (typeof val === 'number') return val;
+      const cleaned = String(val || '0').replace(/[^0-9.]/g, '');
+      return parseFloat(cleaned) || 0;
+    }
+
+    // Update Owner Quick Stats Bar
+    function updateAnalytics() {
+      const total = allOrders.length;
+      const pending = allOrders.filter(o => o.status === 'Pending').length;
+      const readyOrPacked = allOrders.filter(o =>
+        o.status === 'Confirmed / Packed' || o.status === 'Out for Delivery' || o.status === 'Ready for Pickup'
+      ).length;
+      const delivered = allOrders.filter(o => o.status === 'Delivered').length;
+
+      const pickupCount = allOrders.filter(o => (o.fulfillmentType || '').includes('Pickup')).length;
+      const deliveryCount = total - pickupCount;
+
+      const revenue = allOrders.reduce((sum, o) => sum + parseRupees(o.totalAmount), 0);
+
+      document.getElementById('statTotalOrders').textContent = total;
+      document.getElementById('statPickupSplit').textContent = `${pickupCount} Pickup • ${deliveryCount} Delivery`;
+      document.getElementById('statPendingOrders').textContent = pending;
+      document.getElementById('statReadyOrders').textContent = readyOrPacked;
+      document.getElementById('statTotalRevenue').textContent = `₹${revenue.toLocaleString('en-IN')}`;
+      document.getElementById('statDeliveredCount').textContent = `${delivered} Delivered orders`;
+    }
+
+    // Load live orders from Google Apps Script
+    async function loadOrders() {
+      const container = document.getElementById('ordersContainer');
+      const icon = document.getElementById('refreshIcon');
+      icon.classList.add('animate-spin');
+
+      if (!GOOGLE_SCRIPT_WEB_APP_URL.startsWith("http")) {
+        loadDemoOrders();
+        icon.classList.remove('animate-spin');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${GOOGLE_SCRIPT_WEB_APP_URL}?action=getOrders`);
+        allOrders = await res.json();
+        updateAnalytics();
+        renderOrders();
+      } catch (err) {
+        container.innerHTML = `
+          <div class="bg-rose-50 border border-rose-200 text-rose-700 p-5 rounded-2xl text-center text-xs space-y-2">
+            <p class="font-bold">Could not connect to Google Sheet endpoint.</p>
+            <p>Paste your deployed Google Apps Script URL in <code>staff.html</code> or click <strong>"Load Demo Orders"</strong> above to preview.</p>
+          </div>`;
+      } finally {
+        icon.classList.remove('animate-spin');
+      }
+    }
+
+    // Generate 1-Click WhatsApp Notification Link
+    function buildWhatsAppUrl(order) {
+      const cleanPhone = String(order.phone || '').replace(/\D/g, '').slice(-10);
+      const isPickup = (order.fulfillmentType || '').includes('Pickup');
+
+      let statusLine = '';
+      if (order.status === 'Pending') {
+        statusLine = `We have received your DealsToday order and are confirming your items.`;
+      } else if (order.status === 'Confirmed / Packed') {
+        statusLine = `Great news! Your order is *Confirmed & Packed* at our facility.`;
+      } else if (order.status === 'Out for Delivery' || order.status === 'Ready for Pickup') {
+        statusLine = isPickup
+          ? `Your order is *Ready for Pickup* at: ${order.locationDetails}.`
+          : `Your order is *Out for Delivery* to: ${order.locationDetails}.`;
+      } else if (order.status === 'Delivered') {
+        statusLine = `Your order has been marked as *Delivered*. Thank you for shopping with DealsToday!`;
+      }
+
+      const text =
+        `Hello *${order.customerName}* 👋,\n\n` +
+        `Update from *DealsToday (@dealstoday_07)* regarding Order *#${order.orderId}*:\n` +
+        `👉 ${statusLine}\n\n` +
+        `🛍️ *Items:* ${order.itemsSummary}\n` +
+        `💰 *Total Payable:* ${order.totalAmount} (${order.paymentMethod})\n` +
+        `📍 *Fulfillment:* ${order.fulfillmentType}\n\n` +
+        `Reply here if you need any assistance!`;
+
+      return `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`;
+    }
+
+    // Render Order Cards
+    function renderOrders() {
+      const container = document.getElementById('ordersContainer');
+      const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+      const filtered = allOrders.filter(o => {
+        const matchesTab = currentFilter === 'All'
+          || o.status === currentFilter
+          || (currentFilter === 'Out for Delivery' && o.status === 'Ready for Pickup');
+
+        const matchesSearch = !query
+          || (o.orderId || '').toLowerCase().includes(query)
+          || (o.customerName || '').toLowerCase().includes(query)
+          || String(o.phone || '').includes(query);
+
+        return matchesTab && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="bg-white border border-slate-200 p-8 rounded-2xl text-center text-slate-400 text-xs font-semibold">No orders matching your current filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(order => {
+        const badgeClass = statusBadges[order.status] || 'bg-slate-100 text-slate-800 border-slate-300';
+        const isPickup = (order.fulfillmentType || '').includes('Pickup');
+        const waLink = buildWhatsAppUrl(order);
+
+        return `
+          <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+            <!-- Top Row -->
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="font-mono font-black text-sm bg-slate-900 text-white px-2.5 py-1 rounded-lg">${order.orderId}</span>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${isPickup ? 'bg-indigo-50 text-indigo-700' : 'bg-amber-50 text-amber-800'}">
+                  ${isPickup ? '🏪 Store / Warehouse Pickup' : '🛵 Home Delivery (+₹50)'}
+                </span>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-extrabold border ${badgeClass}">
+                ${order.status}
+              </span>
+            </div>
+
+            <!-- Middle Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1">
+                <p class="text-slate-400 uppercase font-extrabold text-[10px]">Customer & Location</p>
+                <p class="font-extrabold text-slate-900 text-sm">${order.customerName}</p>
+                <div class="flex items-center gap-3 pt-0.5">
+                  <a href="tel:+91${order.phone}" class="text-slate-700 font-bold hover:underline">📞 +91 ${order.phone}</a>
+                  <a href="${waLink}" target="_blank"
+                    class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-2.5 py-1 rounded-lg shadow-sm transition">
+                    <span>💬 1-Click WhatsApp Notify</span>
+                  </a>
+                </div>
+                <p class="text-slate-600 mt-1.5 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                  <strong>Address / Point:</strong> ${order.locationDetails}
+                </p>
+              </div>
+
+              <div class="space-y-1">
+                <p class="text-slate-400 uppercase font-extrabold text-[10px]">Ordered Kids Apparel</p>
+                <div class="font-bold text-slate-900 text-xs bg-rose-50/50 border border-rose-100 p-2.5 rounded-xl space-y-1">
+                  ${(order.itemsSummary || '').split(' | ').map(line => `<div>• ${line}</div>`).join('')}
+                </div>
+                <div class="flex items-center justify-between pt-1.5 text-xs">
+                  <span class="text-slate-500">Payment: <strong class="text-slate-800">${order.paymentMethod}</strong></span>
+                  <span class="text-sm font-black text-rose-600">Total: ${order.totalAmount}</span>
+                </div>
+              </div>
+            </div>
+
+            ${order.notes && order.notes !== 'None' ? `
+              <div class="bg-amber-50 border border-amber-200/70 p-2.5 rounded-xl text-xs text-amber-900">
+                <strong>Customer Note:</strong> ${order.notes}
+              </div>
+            ` : ''}
+
+            <!-- Status Action Bar -->
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Update Order Stage:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="updateStatus('${order.orderId}', 'Confirmed / Packed')"
+                  class="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 transition">
+                  📦 Confirmed / Packed
+                </button>
+                <button onclick="updateStatus('${order.orderId}', '${isPickup ? 'Ready for Pickup' : 'Out for Delivery'}')"
+                  class="text-xs font-bold px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition">
+                  ${isPickup ? '🏪 Ready for Pickup' : '🛵 Out for Delivery'}
+                </button>
+                <button onclick="updateStatus('${order.orderId}', 'Delivered')"
+                  class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition">
+                  ✅ Delivered
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function updateStatus(orderId, newStatus) {
+      const target = allOrders.find(o => o.orderId === orderId);
+      if (target) {
+        target.status = newStatus;
+        updateAnalytics();
+        renderOrders();
+      }
+
+      if (!GOOGLE_SCRIPT_WEB_APP_URL.startsWith("http")) return;
+
+      try {
+        await fetch(GOOGLE_SCRIPT_WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'updateStatus', orderId: orderId, newStatus: newStatus })
+        });
+      } catch (err) {
+        alert("Failed to sync status on Google Sheet.");
+      }
+    }
+
+    function filterOrders(status) {
+      currentFilter = status;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const label = btn.textContent.trim();
+        const isMatch = (status === 'All' && label === 'All')
+          || (status === 'Pending' && label === 'Pending')
+          || (status === 'Confirmed / Packed' && label === 'Confirmed / Packed')
+          || (status === 'Out for Delivery' && label === 'Ready / Out for Delivery')
+          || (status === 'Delivered' && label === 'Delivered');
+
+        btn.className = isMatch
+          ? 'filter-btn active px-3.5 py-2 rounded-xl bg-slate-900 text-white shadow-sm'
+          : 'filter-btn px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-rose-50';
+      });
+      renderOrders();
+    }
+
+    // Demo Data Loader for instant testing
+    function loadDemoOrders() {
+      allOrders = [
+        {
+          orderId: "DT-84K2P",
+          customerName: "Ananya Roy",
+          phone: "9876543210",
+          itemsSummary: "Girls Floral Party Frock with Bow [Size: 3-4Y] x1 (₹599) | Kids Graphic Tees (Pack of 3) [Size: 5-6Y] x1 (₹499)",
+          fulfillmentType: "Home Delivery",
+          locationDetails: "House 14, College Para, Near Main Gate - Pin: 734001",
+          paymentMethod: "UPI / QR Scan",
+          totalAmount: "₹1148",
+          notes: "Please send before 6 PM if possible.",
+          status: "Pending"
+        },
+        {
+          orderId: "DT-39M7X",
+          customerName: "Rahul Gurung",
+          phone: "9123456780",
+          itemsSummary: "Boys Cotton Co-ord Summer Set [Size: 5-6Y] x2 (₹898)",
+          fulfillmentType: "Store / Warehouse Pickup",
+          locationDetails: "Main Retail Store (Upper Bagdogra) (Pickup Date: 2026-10-27)",
+          paymentMethod: "Cash on Pickup / Delivery (COD)",
+          totalAmount: "₹898",
+          notes: "None",
+          status: "Confirmed / Packed"
+        },
+        {
+          orderId: "DT-92V5N",
+          customerName: "Sneha Thapa",
+          phone: "9988776655",
+          itemsSummary: "Girls Festive Ethnic Lehenga Choli [Size: 7-8Y] x1 (₹699)",
+          fulfillmentType: "Store / Warehouse Pickup",
+          locationDetails: "Central Warehouse Dispatch Hub (Pickup Date: 2026-10-27)",
+          paymentMethod: "UPI / QR Scan",
+          totalAmount: "₹699",
+          notes: "None",
+          status: "Delivered"
+        }
+      ];
+      updateAnalytics();
+      renderOrders();
+    }
+
+    loadOrders();
+    setInterval(loadOrders, 45000);
+  </script>
+</body>
+</html>
